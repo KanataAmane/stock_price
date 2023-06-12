@@ -21,17 +21,17 @@ if os.path.exists(text_file_path) == False:
 
 
 #ファイル名の取得
-pdf_file_name=input('./pdf/ファイル名.pdf: ')
+inputted_pdf_file_name=input('./pdf/ファイル名.pdf: ')
 
-inputted_pdf_file_path = './pdf/'+pdf_file_name+'.pdf'
+pdf_file_path = './pdf/'+inputted_pdf_file_name+'.pdf'
 
-if os.path.exists(inputted_pdf_file_path) == False:
+if os.path.exists(pdf_file_path) == False:
 	msg.fail("Error: can't find the file.")
 	sys.exit()
 
 
 #テキスト変換。
-fp = open(inputted_pdf_file_path, 'rb')
+fp = open(pdf_file_path, 'rb')
 
 outfp = StringIO()
 
@@ -47,8 +47,8 @@ outfp.close()
 device.close()
 fp.close()
 
-generated_text_file_path = './text/'+pdf_file_name+'_clipped.txt'
-generated_full_text_file_path = './text/'+pdf_file_name+'_full.txt'
+generated_text_file_path = './text/'+inputted_pdf_file_name+'_clipped.txt'
+generated_full_text_file_path = './text/'+inputted_pdf_file_name+'_full.txt'
 
 
 #全テキストを保存。
@@ -104,12 +104,13 @@ else:
 with open('stock_list.csv') as f:
 	lines=f.readlines()
 lines_strip = [line.strip() for line in lines]
-code_and_names = [line_s for line_s in lines_strip if pdf_file_name in line_s ]
+code_and_names = [line_s for line_s in lines_strip if inputted_pdf_file_name in line_s ]
 list_empty = []
 if not code_and_names == list_empty:
 	print(code_and_names)
 else:
 	msg.warn("Warning!: can't find the stock in 'list_of_stocks.csv'")
+	code_and_names = ['該当なし']
 
 
 #提出日の取得。
@@ -139,30 +140,38 @@ result_day = dt.date()
 print(f'提出日: {result_day}')
 
 
+#ファイル名の判定
+if inputted_pdf_file_name.isdecimal() == False:
+	msg.warn('Warning!: 入力したファイル名が銘柄コードではないため、終値を取得できません。')
+	sys.exit()
+
+
 #曜日の判定。
-start = result_day + datetime.timedelta(days=-3)
-end = result_day + datetime.timedelta(days=3)
+start = result_day #+ datetime.timedelta(days=-2)
+end = result_day #+ datetime.timedelta(days=2)
 
 
 #終値の取得。
-ticker_symbol=pdf_file_name
-ticker_symbol_dr=ticker_symbol + '.JP'
+ticker_symbol = inputted_pdf_file_name
+ticker_symbol_dr = ticker_symbol + '.JP'
 
 df_start = web.DataReader(ticker_symbol_dr, 'stooq', start=start, end=start)
 print(df_start)
 
 pre_day_price_df = df_start['Close'][0]
 pre_day_price_int = pre_day_price_df.item()
-print(f'{start}の終値: {pre_day_price_int}')
+print(f'前日の終値 => {pre_day_price_int}\n')
 
 df_end = web.DataReader(ticker_symbol_dr, 'stooq', start=end, end=end)
-print(df_end)
+#print(df_end)
 
 next_day_price_df = df_end['Close'][0]
 next_day_price_int = next_day_price_df.item()
-print(f'{end}の終値: {next_day_price_int}')
+#print(f'後日の終値 => {next_day_price_int}')
+#print(type(inputted_pdf_file_name))
 
 #CSVに結果を出力。
+change_ratio = next_day_price_int/pre_day_price_int
 with open('./results.csv', 'a', newline='') as f:
     writer = csv.writer(f)
-    writer.writerow([pdf_file_name, positive_ratio, pre_day_price_int, next_day_price_int, next_day_price_int/pre_day_price_int])
+    writer.writerow([inputted_pdf_file_name, positive_ratio, pre_day_price_int, next_day_price_int, change_ratio, code_and_names])

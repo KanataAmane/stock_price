@@ -6,7 +6,7 @@ i = 0
 for line in text:
     i = i+1
     print(f'{i}\n{line}')
-    result_of_date = re.findall(('.+年.+月.+日\n'), l)
+    result_of_date = re.findall(('.+年.+月.+日\n'), line)
     check = []
     if not result_of_date == check:
         print(f'{result_of_date},<=提出日')

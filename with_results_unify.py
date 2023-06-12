@@ -47,7 +47,7 @@ outfp.close()
 device.close()
 fp.close()
 
-generated_text_file_path = './text/'+pdf_file_name+'.txt'
+generated_text_file_path = './text/'+pdf_file_name+'_clipped.txt'
 generated_full_text_file_path = './text/'+pdf_file_name+'_full.txt'
 
 
@@ -64,13 +64,11 @@ text = text.replace('　', '')
 extracted_text = text.replace('', '')
 
 index_start = extracted_text.find('【経営者による財政状態、経営成績及びキャッシュ・フローの状況の分析】')
-
 if index_start == -1:
 	msg.fail("Error!: can't find '【経営者による財政状態、経営成績及びキャッシュ・フローの状況の分析】'.")
 	sys.exit()	
 
 index_end = extracted_text.find('【経営上の重要な契約等】')
-
 if index_end == -1:
 		msg.fail("Error!: can't find '【経営上の重要な契約等】'.")
 		sys.exit()

@@ -1,2 +1,2 @@
 This repository is for my research.
-Used for everyone.
+But used for everyone.

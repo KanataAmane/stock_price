@@ -1,1 +1,1 @@
-This repository is for my resarch.
+This repository is for my research.

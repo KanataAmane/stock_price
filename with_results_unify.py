@@ -63,9 +63,11 @@ text = text.replace(' ', '')
 text = text.replace('　', '')
 extracted_text = text.replace('', '')
 
-index_start = extracted_text.find('【経営者による財政状態、経営成績及びキャッシュ・フローの状況の分析】')
+index_start = extracted_text.find(
+    '【経営者による財政状態、経営成績及びキャッシュ・フローの状況の分析】')
 if index_start == -1:
-    msg.fail("Error!: can't find '【経営者による財政状態、経営成績及びキャッシュ・フローの状況の分析】'.")
+    msg.fail("Error!: can't find '【経営者による財政状態、"
+             "経営成績及びキャッシュ・フローの状況の分析】'.")
     sys.exit()
 
 index_end = extracted_text.find('【経営上の重要な契約等】')

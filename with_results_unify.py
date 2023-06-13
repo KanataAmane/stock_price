@@ -174,6 +174,7 @@ next_day_price_int = next_day_price_df.item()
 # print(f'後日の終値 => {next_day_price_int}')
 # print(type(inputted_pdf_file_name))
 
+
 # CSVに結果を出力。
 change_ratio = next_day_price_int/pre_day_price_int
 with open('./results.csv', 'a', newline='') as f:

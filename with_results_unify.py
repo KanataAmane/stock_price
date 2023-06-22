@@ -108,6 +108,8 @@ code_and_names = [
     line_s for line_s in lines_strip if inputted_pdf_file_name in line_s]
 list_empty = []
 if not code_and_names == list_empty:
+    code_and_names = str(code_and_names)
+    code_and_names = code_and_names.replace("'", '')
     print(code_and_names)
 else:
     msg.warn("Warning!: can't find the stock in 'list_of_stocks.csv'")

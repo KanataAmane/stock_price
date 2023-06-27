@@ -12,7 +12,7 @@ with open(path, encoding='utf-8-sig') as f:
         stock_code_str = stock_code_str.replace("'", '')
         stock_code_str = stock_code_str.replace(']', '')
         print(stock_code_str)
-        url = 'https://www.nikkei.com/markets/kigyo/money-schedule/kessan/ResultFlag=3&kwd=' + stock_code_str4
+        url = 'https://www.nikkei.com/markets/kigyo/money-schedule/kessan/ResultFlag=3&kwd=' + stock_code_str
         r = requests.get(url)
         soup = BeautifulSoup(r.content, "html.parser")
         date_list = soup.select('th')

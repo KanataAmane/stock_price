@@ -101,7 +101,7 @@ else:
 
 
 # 企業名や銘柄コードを表示。
-with open('stock_list.csv') as f:
+with open('./stock_list.csv') as f:
     lines = f.readlines()
 lines_strip = [line.strip() for line in lines]
 code_and_names = [

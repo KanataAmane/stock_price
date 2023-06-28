@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import csv
 
+count=0
 path = './stock_codes.csv'
 with open(path, encoding='utf-8-sig') as f:
     reader = csv.reader(f)
@@ -25,6 +26,8 @@ with open(path, encoding='utf-8-sig') as f:
         n = n.replace('h', '')
         n = n.replace('>', '')
         n = n.replace(']', '')
+        count = count + 1
+        print(count)
         with open('./earnings_date.csv', 'a', newline='') as f:
             writer = csv.writer(f)
-            writer.writerow([n, stock_code_str4])
+            writer.writerow([n, stock_code_str])

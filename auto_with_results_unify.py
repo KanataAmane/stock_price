@@ -109,7 +109,7 @@ with open('./topix_codes_list.csv', encoding='utf-8-sig') as f:
             lines = f.readlines()
         lines_strip = [line.strip() for line in lines]
         code_and_names = [
-            line_s for line_s in lines_strip if file_name in line_s]
+            line for line in lines_strip if file_name in line]
         list_empty = []
         if not code_and_names == list_empty:
             code_and_names = str(code_and_names)
@@ -118,6 +118,7 @@ with open('./topix_codes_list.csv', encoding='utf-8-sig') as f:
         else:
             msg.warn("Warning!: can't find the stock in 'list_of_stocks.csv'")
             code_and_names = ['該当なし']
+            print(code_and_names)
 
         # 提出日の取得。
         with open(full_text_file_path) as f:

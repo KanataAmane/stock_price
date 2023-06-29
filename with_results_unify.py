@@ -114,6 +114,7 @@ if not code_and_names == list_empty:
 else:
     msg.warn("Warning!: can't find the stock in 'list_of_stocks.csv'")
     code_and_names = ['該当なし']
+    print(code_and_names)
 
 
 # 提出日の取得。

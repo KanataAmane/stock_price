@@ -26,19 +26,17 @@ with open('./topix_codes_list.csv', encoding='utf-8-sig') as f:
         file_name = file_name.replace("'", '')
         print(file_name)
 
-        
         # "text"フォルダの作成
         text_directory_path = './text'
         if os.path.exists(text_directory_path) is False:
-        	os.mkdir(text_directory_path)
+            os.mkdir(text_directory_path)
 
         pdf_file_path = './pdf/'+file_name+'.pdf'
         if os.path.exists(pdf_file_path) is False:
             msg.fail("Error: can't find below file.", pdf_file_path)
             sys.exit()
 
-
-        #テキスト変換。
+        # テキスト変換。
         fp = open(pdf_file_path, 'rb')
 
         outfp = StringIO()
@@ -60,7 +58,6 @@ with open('./topix_codes_list.csv', encoding='utf-8-sig') as f:
         with open(full_text_file_path, 'w') as f:
             f.write(text)
 
-
         # テキストの抜粋と保存。
         text_extracted = text.replace('\n', '')
         text_extracted = text_extracted.replace(' ', '')
@@ -71,10 +68,10 @@ with open('./topix_codes_list.csv', encoding='utf-8-sig') as f:
             '【経営者による財政状態、経営成績及びキャッシュ・フローの状況の分析】')
         if index_start == -1:
             msg.fail("Error!: can't find '【経営者による財政状態、"
-            "経営成績及びキャッシュ・フローの状況の分析】'.")
+                     "経営成績及びキャッシュ・フローの状況の分析】'.")
             print(pdf_file_path)
             sys.exit()
-        
+
         index_end = extracted_text.find('【経営上の重要な契約等】')
         if index_end == -1:
             msg.fail("Error!: can't find '【経営上の重要な契約等】'.")
@@ -86,7 +83,7 @@ with open('./topix_codes_list.csv', encoding='utf-8-sig') as f:
         text_file_path = './text/'+file_name+'_extracted.txt'
         with open(text_file_path, 'w') as f:
             f.write(text_extracted)
-        
+
         # ポジティブ比の分析。
         print('増 =>', text_extracted.count('増'))
         positive = text_extracted.count('増')
@@ -107,7 +104,6 @@ with open('./topix_codes_list.csv', encoding='utf-8-sig') as f:
         else:
             msg.fail('Error!: both positive and negative are null.')
 
-
         # 企業名や銘柄コードを表示。
         with open('./stock_list.csv') as f:
             lines = f.readlines()
@@ -123,11 +119,10 @@ with open('./topix_codes_list.csv', encoding='utf-8-sig') as f:
             msg.warn("Warning!: can't find the stock in 'list_of_stocks.csv'")
             code_and_names = ['該当なし']
 
-
         # 提出日の取得。
         with open(full_text_file_path) as f:
             full_text_list = f.readlines()
-        
+
         for n in full_text_list:
             result_of_date = re.findall(('.+年.+月.+日\n'), n)
             check = []
@@ -136,12 +131,13 @@ with open('./topix_codes_list.csv', encoding='utf-8-sig') as f:
 
         if result_of_date == check:
             msg.warn("Warning!: can't find '提出日'")
-        
+
         result_of_date = ''.join(result_of_date)
         result_of_date = result_of_date.replace('[]', '')
         result_of_date = result_of_date.replace('\n', '')
 
-        normalized_result_of_date = unicodedata.normalize('NFKC', result_of_date)
+        normalized_result_of_date = unicodedata.normalize(
+            'NFKC', result_of_date)
 
         result_of_date_format = '%Y年%m月%d日'
         dt = datetime.datetime.strptime(
@@ -150,8 +146,7 @@ with open('./topix_codes_list.csv', encoding='utf-8-sig') as f:
 
         print(f'提出日 => {result_day}')
 
-
-        #決算日の取得。
+        # 決算日の取得。
         with open('earnings_date.csv', encoding='utf-8-sig') as f:
             lines = f.readlines()
         lines_strip = [line.strip() for line in lines]
@@ -159,7 +154,8 @@ with open('./topix_codes_list.csv', encoding='utf-8-sig') as f:
             line_s for line_s in lines_strip if file_name in line_s]
         list_empty == []
         if earnings_date_list == list_empty:
-            msg.error("Error!: can't find the earnings date in 'earings_date.csv'")
+            msg.error(
+                "Error!: can't find the earnings date in 'earings_date.csv'")
             print(pdf_file_path)
             sys.exit()
 
@@ -171,20 +167,20 @@ with open('./topix_codes_list.csv', encoding='utf-8-sig') as f:
         earnings_date_str = earnings_date_str.replace(',', '')
 
         earnings_date_format = '%Y/%m/%d/'
-        dt = datetime.datetime.strptime(earnings_date_str, earnings_date_format)
+        dt = datetime.datetime.strptime(
+            earnings_date_str, earnings_date_format)
 
         earnings_date = dt.date()
         print(f'決算日 => {earnings_date}')
 
-
-        #曜日の判定。
+        # 曜日の判定。
         start = earnings_date + datetime.timedelta(days=-1)
         end = earnings_date + datetime.timedelta(days=1)
 
         holiday = datetime.date(2023, 5, 8)
         if earnings_date == holiday:
             start = datetime.date(2023, 5, 8)
-        
+
         start_day = start.weekday()
         if start_day == 6:
             start = earnings_date + datetime.timedelta(days=-3)
@@ -203,12 +199,12 @@ with open('./topix_codes_list.csv', encoding='utf-8-sig') as f:
         if end_day == 6:
             end = earnings_date + datetime.timedelta(days=2)
 
-        
-        #終値の取得。
+        # 終値の取得。
         ticker_symbol = file_name
         ticker_symbol_dr = ticker_symbol + '.JP'
 
-        df_start = web.DataReader(ticker_symbol_dr, 'stooq', start=start, end=start)
+        df_start = web.DataReader(
+            ticker_symbol_dr, 'stooq', start=start, end=start)
 
         pre_day_price_df = df_start['Close'][0]
         pre_day_price_int = pre_day_price_df.item()
@@ -220,11 +216,11 @@ with open('./topix_codes_list.csv', encoding='utf-8-sig') as f:
         next_day_price_int = next_day_price_df.item()
         print(f'後日の終値 => {next_day_price_int}')
 
-
-        #同日のTOPIXの終値の取得。
+        # 同日のTOPIXの終値の取得。
         ticker_symbol_dr = '^TPX'
 
-        df_start = web.DataReader(ticker_symbol_dr, 'stooq', start=start, end=start)
+        df_start = web.DataReader(
+            ticker_symbol_dr, 'stooq', start=start, end=start)
 
         pre_day_topix_price_df = df_start['Close'][0]
         pre_day_topix_price_int = pre_day_topix_price_df.item()
@@ -236,15 +232,14 @@ with open('./topix_codes_list.csv', encoding='utf-8-sig') as f:
         next_day_topix_price_int = next_day_topix_price_df.item()
         print(f'TOPIXの後日の終値 => {next_day_topix_price_int}')
 
-
-        #CSVに結果を出力。
+        # CSVに結果を出力。
         change_ratio = next_day_price_int/pre_day_price_int
         topix_change_ratio = next_day_topix_price_int/pre_day_topix_price_int
         with open('./results.csv', 'a', newline='') as f:
             writer = csv.writer(f)
             writer.writerow([file_name, positive_ratio,
-                        pre_day_price_int, next_day_price_int,
-                        change_ratio, code_and_names, 
-                        topix_change_ratio])
+                             pre_day_price_int, next_day_price_int,
+                             change_ratio, code_and_names,
+                             topix_change_ratio])
 
         print(pdf_file_path)

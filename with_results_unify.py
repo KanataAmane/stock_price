@@ -150,7 +150,7 @@ if inputted_pdf_file_name.isdecimal() is False:
     sys.exit()
 
 
-#決算日の取得。
+# 決算日の取得。
 with open('earnings_date.csv', encoding='utf-8-sig') as f:
     lines = f.readlines()
 lines_strip = [line.strip() for line in lines]
@@ -160,7 +160,7 @@ list_empty = []
 if earnings_date_list == list_empty:
     msg.error("Error!: can't find the earnings date in 'earings_date.csv'")
     sys.exit()
-    
+
 earnings_date_str = str(earnings_date_list[0])
 earnings_date_str = earnings_date_str.replace('[', '')
 earnings_date_str = earnings_date_str.replace("'", '')
@@ -206,32 +206,32 @@ ticker_symbol = inputted_pdf_file_name
 ticker_symbol_dr = ticker_symbol + '.JP'
 
 df_start = web.DataReader(ticker_symbol_dr, 'stooq', start=start, end=start)
-#print(df_start)
+# print(df_start)
 
 pre_day_price_df = df_start['Close'][0]
 pre_day_price_int = pre_day_price_df.item()
 print(f'前日の終値 => {pre_day_price_int}')
 
 df_end = web.DataReader(ticker_symbol_dr, 'stooq', start=end, end=end)
-#print(df_end)
+# print(df_end)
 
 next_day_price_df = df_end['Close'][0]
 next_day_price_int = next_day_price_df.item()
 print(f'後日の終値 => {next_day_price_int}')
 
 
-#同日のTOPIXの終値
+# 同日のTOPIXの終値
 ticker_symbol_dr = '^TPX'
 
 df_start = web.DataReader(ticker_symbol_dr, 'stooq', start=start, end=start)
-#print(df_start)
+# print(df_start)
 
 pre_day_topix_price_df = df_start['Close'][0]
 pre_day_topix_price_int = pre_day_topix_price_df.item()
 print(f'TOPIXの前日の終値 => {pre_day_topix_price_int}')
 
 df_end = web.DataReader(ticker_symbol_dr, 'stooq', start=end, end=end)
-#print(df_end)
+# print(df_end)
 
 next_day_topix_price_df = df_end['Close'][0]
 next_day_topix_price_int = next_day_topix_price_df.item()
@@ -245,5 +245,5 @@ with open('./results.csv', 'a', newline='') as f:
     writer = csv.writer(f)
     writer.writerow([inputted_pdf_file_name, positive_ratio,
                     pre_day_price_int, next_day_price_int,
-                    change_ratio, code_and_names, 
+                    change_ratio, code_and_names,
                     topix_change_ratio])

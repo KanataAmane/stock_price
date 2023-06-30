@@ -247,4 +247,4 @@ with open('./results.csv', 'a', newline='') as f:
     writer.writerow([inputted_pdf_file_name, positive_ratio,
                     pre_day_price_int, next_day_price_int,
                     change_ratio, code_and_names,
-                    topix_change_ratio])
+                    topix_change_ratio, earnings_date])

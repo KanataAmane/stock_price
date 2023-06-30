@@ -13,6 +13,8 @@ from pdfminer.layout import LAParams
 from io import StringIO
 from wasabi import msg
 
+counter = 0
+SIGNAL = 'システムを終了します。'
 rows = []
 with open('./topix_codes_list.csv', encoding='utf-8-sig') as f:
     reader = csv.reader(f)
@@ -34,6 +36,7 @@ with open('./topix_codes_list.csv', encoding='utf-8-sig') as f:
         pdf_file_path = './pdf/'+file_name+'.pdf'
         if os.path.exists(pdf_file_path) is False:
             msg.fail("Error: can't find below file.", pdf_file_path)
+            print(SIGNAL)
             sys.exit()
 
         # テキスト変換。
@@ -241,6 +244,8 @@ with open('./topix_codes_list.csv', encoding='utf-8-sig') as f:
             writer.writerow([file_name, positive_ratio,
                              pre_day_price_int, next_day_price_int,
                              change_ratio, code_and_names,
-                             topix_change_ratio])
+                             topix_change_ratio, earnings_date])
 
-        print(pdf_file_path)
+        msg.good(f'Success!: 銘柄コード=>{file_name}')
+        counter = counter + 1
+		print(f'カウンター=>{counter}')
